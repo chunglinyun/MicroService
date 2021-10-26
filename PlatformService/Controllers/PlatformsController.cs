@@ -12,13 +12,13 @@ namespace PlatformService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlatfromController : ControllerBase
+    public class PlatformsController : ControllerBase
     {
         private readonly IPlatfromRepo _repo;
         private readonly IMapper _mapper;
         private readonly ICommandDataClient _commandDataClient;
 
-        public PlatfromController(IPlatfromRepo repo, IMapper mapper,ICommandDataClient commandDataClient)
+        public PlatformsController(IPlatfromRepo repo, IMapper mapper,ICommandDataClient commandDataClient)
         {
             _repo = repo;
             _mapper = mapper;
