@@ -17,6 +17,7 @@ namespace PlatformService.Controllers
         private readonly IPlatfromRepo _repo;
         private readonly IMapper _mapper;
         private readonly ICommandDataClient _commandDataClient;
+        private string test;
 
         public PlatformsController(IPlatfromRepo repo, IMapper mapper,ICommandDataClient commandDataClient)
         {
