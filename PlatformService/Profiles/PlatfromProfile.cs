@@ -10,6 +10,7 @@ namespace PlatformService.Profiles
         {
             // Source -> Target
             CreateMap<Platfrom, PlatfromReadDto>();
+            CreateMap<PlatfromCreateDto,Platfrom>();
         }
     }
 }
