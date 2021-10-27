@@ -15,8 +15,11 @@ namespace PlatformService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+
+        public Startup(IConfiguration configuration,IWebHostEnvironment env)
         {
+            _env = env;
             Configuration = configuration;
         }
 
@@ -24,8 +27,19 @@ namespace PlatformService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(opt =>
-                opt.UseInMemoryDatabase("InMem"));
+            if (_env.IsProduction())
+            {
+                Console.WriteLine("--> Using SqlServer DB");
+                services.AddDbContext<AppDbContext>(opt =>
+                    opt.UseSqlServer(Configuration.GetConnectionString("PlatformsConn")));
+            }
+            else
+            {
+                Console.WriteLine("--> Using InMem Db");
+                services.AddDbContext<AppDbContext>(opt =>
+                    opt.UseInMemoryDatabase("InMem"));
+            }
+
             services.AddScoped<IPlatfromRepo, PlatfromsRepo>();
 
             services.AddHttpClient<ICommandDataClient,HttpCommandDataClient>();
@@ -58,9 +72,12 @@ namespace PlatformService
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
             
-            PrepDb.PrepPopulation(app);
+            PrepDb.PrepPopulation(app,env.IsProduction());
         }
     }
 }
