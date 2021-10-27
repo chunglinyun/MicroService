@@ -18,7 +18,7 @@ namespace PlatformService.SyncDataServices.Http
             _httpClient = httpClient;
             _configuration = configuration;
         }
-        public async Task SendPlatformToCommand(PlatfromReadDto plat)
+        public async Task SendPlatformToCommand(PlatformReadDto plat)
         {
             var httpContext = new StringContent(
                     JsonSerializer.Serialize(plat),

@@ -38,17 +38,17 @@ namespace PlatformService.Data
                 Console.WriteLine("--> Seeding Data...");
 
                 context.Platfroms.AddRange(
-                    new Platfrom()
+                    new Platform()
                     {
                         Name = "DotNet",
                         Publisher = "Microsoft",
                         Cost = "Free"
-                    }, new Platfrom()
+                    }, new Platform()
                     {
                         Name = "SQL Server",
                         Publisher = "Microsoft",
                         Cost = "Free"
-                    }, new Platfrom()
+                    }, new Platform()
                     {
                         Name = "Kubernetes",
                         Publisher = "Cloud Native Computing Foundation",

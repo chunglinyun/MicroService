@@ -18,17 +18,17 @@ namespace PlatformService.Data
             return (_context.SaveChanges() >= 0);
         }
 
-        public IEnumerable<Platfrom> GetAllPlatfroms()
+        public IEnumerable<Platform> GetAllPlatfroms()
         {
             return _context.Platfroms.ToList();
         }
 
-        public Platfrom GetPlatfromById(int id)
+        public Platform GetPlatfromById(int id)
         {
             return _context.Platfroms.FirstOrDefault(x => x.Id == id);
         }
 
-        public void CreatePlatfrom(Platfrom plat)
+        public void CreatePlatfrom(Platform plat)
         {
             if (plat == null)
             {

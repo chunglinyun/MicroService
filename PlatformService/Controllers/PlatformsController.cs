@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.Dtos;
 using PlatformService.Models;
@@ -17,39 +18,42 @@ namespace PlatformService.Controllers
         private readonly IPlatfromRepo _repo;
         private readonly IMapper _mapper;
         private readonly ICommandDataClient _commandDataClient;
+        private readonly IMessageBusClient _messageBusClient;
 
-        public PlatformsController(IPlatfromRepo repo, IMapper mapper,ICommandDataClient commandDataClient)
+        public PlatformsController(IPlatfromRepo repo, IMapper mapper,ICommandDataClient commandDataClient,IMessageBusClient messageBusClient)
         {
             _repo = repo;
             _mapper = mapper;
             _commandDataClient = commandDataClient;
+            _messageBusClient = messageBusClient;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<PlatfromReadDto>> GetPlatfrom()
+        public ActionResult<IEnumerable<PlatformReadDto>> GetPlatfrom()
         {
             var platfromItem = _repo.GetAllPlatfroms();
-            return Ok(_mapper.Map<IEnumerable<PlatfromReadDto>>(platfromItem));
+            return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platfromItem));
         }
         [HttpGet("{id}",Name = "GetPlatfromById")]
-        public ActionResult<PlatfromReadDto> GetPlatfromById(int id)
+        public ActionResult<PlatformReadDto> GetPlatfromById(int id)
         {
             var platfromItem = _repo.GetPlatfromById(id);
             if (platfromItem == null) return NotFound();
-            return Ok(_mapper.Map<PlatfromReadDto>(platfromItem));
+            return Ok(_mapper.Map<PlatformReadDto>(platfromItem));
         }
 
         [HttpPost]
-        public async Task<ActionResult<PlatfromReadDto>> CreatePlatfrom(PlatfromCreateDto item)
+        public async Task<ActionResult<PlatformReadDto>> CreatePlatfrom(PlatfromCreateDto item)
         {
             if (item == null) return BadRequest();
-            var platfromModel = _mapper.Map<Platfrom>(item);
+            var platfromModel = _mapper.Map<Platform>(item);
 
             _repo.CreatePlatfrom(platfromModel);
             _repo.SaveChange();
 
-            var platfromReadDto = _mapper.Map<PlatfromReadDto>(platfromModel);
-
+            var platfromReadDto = _mapper.Map<PlatformReadDto>(platfromModel);
+            
+            //Send Sync Message
             try
             {
                 await _commandDataClient.SendPlatformToCommand(platfromReadDto);
@@ -59,6 +63,18 @@ namespace PlatformService.Controllers
                 Console.WriteLine($"--> Could not send synchronously : {ex.Message}");
             }
 
+            //Send Async Message
+
+            try
+            {
+                var platformPublishedDto = _mapper.Map<PlatformPublishedDto>(platfromReadDto);
+                platformPublishedDto.Event = "Platform_Published";
+                _messageBusClient.PublishNewPlatform(platformPublishedDto);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"--> Could not send asynchronously : {ex.Message}");
+            }
             return CreatedAtRoute(nameof(GetPlatfromById), new {Id = platfromReadDto.Id}, platfromReadDto);
         }
     }
