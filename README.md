@@ -42,3 +42,5 @@ kubectl get namespace
 kubectl get pvc
 
 kubectl delete deployment yamlName
+#重啟
+kubectl rollout restart deployment yamlName
