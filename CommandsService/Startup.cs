@@ -2,6 +2,7 @@ using System;
 using CommandsService.AsyncDataServices;
 using CommandsService.Data;
 using CommandsService.EventProcessing;
+using CommandsService.SyncDataServices.gRPC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ namespace CommandsService
         {
             services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
             services.AddScoped<ICommandRepo, CommandRepo>();
+            services.AddScoped<IPlatformDataClient, PlatformDataClient>();
             services.AddSingleton<IEventProcessor, EventProcessor>();
             services.AddControllers();
             services.AddHostedService<MessageBusSubscriber>();
@@ -47,7 +49,7 @@ namespace CommandsService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommandsService v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -57,7 +59,7 @@ namespace CommandsService
             {
                 endpoints.MapControllers();
             });
-            //PrepDb.PrepPopulation(app);
+            PrepDb.PrepPopulation(app);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CommandsService.Models;
 
-namespace CommandsService.SyncDataServices.Grpc
+namespace CommandsService.SyncDataServices.gRPC
 {
     public interface IPlatformDataClient
     {

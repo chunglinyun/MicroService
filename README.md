@@ -41,4 +41,4 @@ kubectl get namespace
 
 kubectl get pvc
 
-kubectl delete deployment platforms-depl
+kubectl delete deployment yamlName

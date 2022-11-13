@@ -11,11 +11,15 @@ using Microsoft.OpenApi.Models;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.SyncDataServices.Http;
+using PlatformService.SyncDataServices.Grpc;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace PlatformService
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         private readonly IWebHostEnvironment _env;
 
         public Startup(IConfiguration configuration,IWebHostEnvironment env)
@@ -24,7 +28,6 @@ namespace PlatformService
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -41,14 +44,15 @@ namespace PlatformService
                     opt.UseInMemoryDatabase("InMem"));
             }
 
-            services.AddScoped<IPlatfromRepo, PlatfromsRepo>();
+            services.AddScoped<IPlatformRepo, PlatfromsRepo>();
             
             services.AddHttpClient<ICommandDataClient,HttpCommandDataClient>();
             
             services.AddSingleton<IMessageBusClient, MessageBusClient>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
-
+            services.AddGrpc();
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
@@ -78,6 +82,13 @@ namespace PlatformService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGrpcService<GrpcPlatformService>();
+
+                endpoints.MapGet("/protos/platforms.proto", async context =>
+                {
+                    await context.Response.WriteAsync(File.ReadAllText("Protos/platforms.proto"));
+                });
+
             });
 
             PrepDb.PrepPopulation(app, env.IsProduction());

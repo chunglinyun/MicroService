@@ -17,7 +17,7 @@ namespace PlatformService.AsyncDataServices
         public MessageBusClient(IConfiguration configuration)
         {
             _configuration = configuration;
-            var factory = new ConnectionFactory(){HostName = _configuration["RabbitMQHost"],Port = int.Parse(_configuration["RabbitMQPost"])};
+            var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPost"]) };
             try
             {
                 _connection = factory.CreateConnection();
@@ -26,7 +26,7 @@ namespace PlatformService.AsyncDataServices
                 _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
 
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
-                
+
                 Console.WriteLine("--> Connected To MessageBus");
             }
             catch (Exception ex)
@@ -61,9 +61,9 @@ namespace PlatformService.AsyncDataServices
             var body = Encoding.UTF8.GetBytes(msg);
             _channel.BasicPublish(
                 exchange: "trigger",
-                routingKey:"",
-                basicProperties:null,
-                body:body);
+                routingKey: "",
+                basicProperties: null,
+                body: body);
             Console.WriteLine($"--> We have sent {msg}");
         }
 

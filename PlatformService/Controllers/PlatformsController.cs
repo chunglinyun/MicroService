@@ -15,12 +15,12 @@ namespace PlatformService.Controllers
     [ApiController]
     public class PlatformsController : ControllerBase
     {
-        private readonly IPlatfromRepo _repo;
+        private readonly IPlatformRepo _repo;
         private readonly IMapper _mapper;
         private readonly ICommandDataClient _commandDataClient;
         private readonly IMessageBusClient _messageBusClient;
 
-        public PlatformsController(IPlatfromRepo repo, IMapper mapper,ICommandDataClient commandDataClient,IMessageBusClient messageBusClient)
+        public PlatformsController(IPlatformRepo repo, IMapper mapper,ICommandDataClient commandDataClient,IMessageBusClient messageBusClient)
         {
             _repo = repo;
             _mapper = mapper;
@@ -31,7 +31,7 @@ namespace PlatformService.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<PlatformReadDto>> GetPlatfrom()
         {
-            var platfromItem = _repo.GetAllPlatfroms();
+            var platfromItem = _repo.GetAllPlatforms();
             return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platfromItem));
         }
         [HttpGet("{id}",Name = "GetPlatfromById")]
