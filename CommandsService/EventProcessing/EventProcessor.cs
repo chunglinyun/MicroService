@@ -61,7 +61,7 @@ namespace CommandsService.EventProcessing
                     if (!repo.PlatformExits(plat.ExternalID))
                     {
                         repo.CreatePlatform(plat);
-                        repo.SaveChange();
+                        repo.SaveChanges();
                     }
                     else
                     {

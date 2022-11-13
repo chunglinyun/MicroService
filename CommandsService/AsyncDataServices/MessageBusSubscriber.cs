@@ -19,11 +19,11 @@ namespace CommandsService.AsyncDataServices
         private string _queueName;
 
 
-        public MessageBusSubscriber(IConfiguration configuration,IEventProcessor eventProcessor, IModel channel)
+        public MessageBusSubscriber(IConfiguration configuration,IEventProcessor eventProcessor)
         {
             _configuration = configuration;
             _eventProcessor = eventProcessor;
-            _channel = channel;
+
 
             InitializeRabbitMQ();
         }
