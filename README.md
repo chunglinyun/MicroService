@@ -1,3 +1,4 @@
+How to run
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
 
@@ -19,17 +20,19 @@ kubectl apply -f mssql-plat-depl.yaml
 
 kubectl apply -f rabbitmq-depl.yaml
 
+docker build -t DockerHubUsername/platformservice .
+
+docker push DockerHubUsername/platformservice
+
+docker build -t DockerHubUsername/commandsservice .
+
+docker push DockerHubUsername/commandsservice
+
 kubectl apply -f platforms-depl.yaml
 
 kubectl apply -f commands-depl.yaml
 
-docker build -t username/platformservice .
-
-docker push username/platformservice
-
-docker build -t username/commandsservice .
-
-docker push username/commandsservice
+***
 
 kubectl get deployments
 
