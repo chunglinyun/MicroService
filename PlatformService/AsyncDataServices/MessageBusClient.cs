@@ -69,7 +69,7 @@ namespace PlatformService.AsyncDataServices
 
         private void Dispose()
         {
-            Console.WriteLine("MessageBug Dispose");
+            Console.WriteLine("MessageBus Dispose");
             if (_channel.IsOpen)
             {
                 _channel.Close();
