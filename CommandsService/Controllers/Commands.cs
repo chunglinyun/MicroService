@@ -39,7 +39,7 @@ namespace CommandsService.Controllers
         [HttpGet("{commandId}", Name = "GetCommandForPlatform")]
         public IActionResult GetCommandForPlatform(int platformId,int commandId)
         {
-            Console.WriteLine($"--> Hit GetCommandsForPlatform: {platformId} / {commandId}");
+            Console.WriteLine($"--> Hit GetCommandForPlatform: {platformId} / {commandId}");
             if (!_repo.PlatformExits(platformId))
             {
                 return NotFound();
